@@ -101,18 +101,15 @@ def gen_add1():
     a1 = random.randrange(1, 10)
     a2 = random.randrange(0, 9)
 
-    b1 = random.randrange(0, 10 - a2)
+    b1 = random.randrange(1, 10 - a2)
+    a = a1 * 10 + a2
+
+    res = gen_digits(a, "+", b1)
+    idx = len(res)
+
+    res.extend(num_to_digits(a + b1, idx, 100, green, False))
     
-    res.append(Digit(getx(0), 100, red, a1, True))
-    res.append(Digit(getx(1), 100, red, a2, True))
-    res.append(Digit(getx(2), 100, red, "+", True))
-    res.append(Digit(getx(3), 100, red, b1, True))
-    res.append(Digit(getx(4), 100, red, "=", True))
-
-    res.append(Digit(getx(5), 100, green, a1, False))
-    res.append(Digit(getx(6), 100, green, a2 + b1, False))
-
-    return (res, 5)
+    return (res, idx)
 
 def gen_add2():
     res = []
@@ -146,24 +143,20 @@ def gen_mult():
     a = random.randrange(1, 10)
     b = random.randrange(1, 10)
 
-    res.append(Digit(getx(0), 100, red, a, True))
-    res.append(Digit(getx(1), 100, red, ".", True))
-    res.append(Digit(getx(2), 100, red, b, True))
-    res.append(Digit(getx(3), 100, red, "=", True))
+    res = gen_digits(a, ".", b)
 
     prod = a * b
-    if prod < 10:
-        res.append(Digit(getx(4), 100, green, prod, False))
-        return (res, 4)
-    res.append(Digit(getx(4), 100, green, int(prod / 10), False))
-    res.append(Digit(getx(5), 100, green, prod % 10, False))
 
-    return (res, 4)
+    idx = len(res)
+    res.extend(num_to_digits(prod, idx, 100, green, False))
+
+    return (res, idx)
 
 def gen():
-    return gen_div()
+    #return gen_mult()
+    # return gen_div()
 
-    x = random.randrange(0, 3)
+    x = random.randrange(2, 4)
 
     if x == 0:
         return gen_add2()
@@ -171,12 +164,21 @@ def gen():
         return gen_add1()
     if x == 2:
         return gen_mult()
+    if x == 3:
+        return gen_div()
 
 def getKey(keys):
     i = pygame.K_0
     while i <= pygame.K_9:
         if keys[i]:
             return i - pygame.K_0
+
+        i = i + 1
+
+    i = pygame.K_KP0
+    while i <= pygame.K_KP9:
+        if keys[i]:
+            return i - pygame.K_KP0
 
         i = i + 1
 
@@ -202,8 +204,8 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
-            if keys[K_ESCAPE]:
-                break
+            if keys[pygame.K_ESCAPE]:
+                pygame.quit()
 
             pkey = getKey(keys)
 
