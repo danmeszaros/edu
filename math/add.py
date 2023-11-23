@@ -21,6 +21,24 @@ RECT = 100
 red = (255, 128, 128)
 green = (128, 255, 128)
 
+class Generator:
+    def __init__(self, y):
+        self.x = 1
+        self.y = y
+
+    def getNext(self):
+        res = (self.x, self.y)
+
+        self.x = self.x + 1
+
+        if self.x == 11:
+            self.y = self.y + 1
+            self.x = 1
+
+        return res
+
+generator = Generator(2)
+
 class Digit:
     def __init__(self, x, y, bgcolor, value, shown):
         self.x = x
@@ -140,8 +158,10 @@ def gen_add2():
 
 def gen_mult():
     res = []
-    a = random.randrange(1, 10)
-    b = random.randrange(1, 10)
+    #a = random.randrange(1, 10)
+    #b = random.randrange(1, 10)
+
+    (a,b) = generator.getNext()
 
     res = gen_digits(a, ".", b)
 
@@ -153,7 +173,7 @@ def gen_mult():
     return (res, idx)
 
 def gen():
-    #return gen_mult()
+    return gen_mult()
     # return gen_div()
 
     x = random.randrange(2, 4)
