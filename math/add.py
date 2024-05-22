@@ -23,21 +23,26 @@ green = (128, 255, 128)
 
 class Generator:
     def __init__(self, y):
-        self.x = 1
+        self.rarr1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        self.rarr2 = [6, 7, 8, 9, 2, 3, 4, 5]
+        random.shuffle(self.rarr1)
+
+        self.x = 0
         self.y = y
 
     def getNext(self):
-        res = (self.x, self.y)
+        res = (self.rarr1[self.x], self.rarr2[self.y])
 
         self.x = self.x + 1
 
-        if self.x == 11:
+        if self.x == len(self.rarr1):
             self.y = self.y + 1
-            self.x = 1
+            random.shuffle(self.rarr1)
+            self.x = 0
 
         return res
 
-generator = Generator(2)
+generator = Generator(0)
 
 class Digit:
     def __init__(self, x, y, bgcolor, value, shown):
@@ -215,8 +220,8 @@ key = None
 correct = 0
 incorrect = 0
 
-correctText = getScoreText(font, "correct", 0)
-incorrectText = getScoreText(font, "incorrect", 0)
+correctText = getScoreText(font, "správně", 0)
+incorrectText = getScoreText(font, "nesprávně", 0)
 
 while running:
     for event in pygame.event.get():
@@ -261,7 +266,7 @@ while running:
     pygame.display.flip()
 
     if idx >= len(digits):
-        pygame.mixer.Sound.play(ok_sound[random.randrange(0, len(ok_sound))])
+        # pygame.mixer.Sound.play(ok_sound[random.randrange(0, len(ok_sound))])
         time.sleep(1)
         (digits, idx) = gen()
 
